@@ -84,7 +84,7 @@ Parameters:
 Number of Support Vectors:  692
 ```
 
-Concrete compressive strength using prediction
+Plot of predicted concrete compressive strength
 ========================================================
 
 <img src="shinyApp-figure/unnamed-chunk-2-1.png" title="plot of chunk unnamed-chunk-2" alt="plot of chunk unnamed-chunk-2" width="1000px" height="1000px" />

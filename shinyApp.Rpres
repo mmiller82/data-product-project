@@ -53,7 +53,7 @@ summary(svm.model)
 summary(svm.aggregate)
 ```
 
-Concrete compressive strength using prediction
+Plot of predicted concrete compressive strength
 ========================================================
 
 ```{r, echo=FALSE, out.height="1000px",out.width="1000px", cache=TRUE}
