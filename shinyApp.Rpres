@@ -1,0 +1,72 @@
+Compressive Strength prediction with Shiny!
+========================================================
+author: Maury Miller
+date: 2/18/2015
+width: 1000
+height: 1200
+font-family: 'Helvetica'
+
+Introduction
+========================================================
+
+The shiny app displays a prediction of compressive strength for
+an amount of cement or an amount of fine aggregate.  It uses a svm
+model for prediction.  
+The app allows a user to enter a value for cement
+and fine aggregate concentration in a side panel. The app will predict the
+compressive strength and reactively display it in the main panel.
+
+The data are from Yeh (1998) and taken from 
+the University of California, Irvine Machine Learning Repository
+website http://archive.ics.uci.edu/ml/datasets/Concrete+Compressive+Strength.
+It has the predictor columns Cement, BlastFurnaceSlag, FlyAsh, Water, Superplasticizer, 
+CoarseAggregate, FineAggregate and Age with response column CompressiveStrength.
+
+I used a training set to train the model.  The prediction comes from a testing data set.
+
+
+Concrete Data
+========================================================
+
+```{r data, echo=FALSE,out.height="1000px",out.width="1000px",cache=TRUE}
+library(AppliedPredictiveModeling)
+
+data(concrete)
+head(concrete)
+```
+
+Prediction models
+========================================================
+
+```{r, echo=FALSE, cache=FALSE}
+set.seed(3200)
+library(caret)
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[ inTrain,]
+testing = concrete[-inTrain,]
+
+set.seed(111)
+library(e1071)
+svm.model <- svm(CompressiveStrength ~ Cement, data = training)
+svm.aggregate <- svm(CompressiveStrength ~ FineAggregate, data = training)
+summary(svm.model)
+summary(svm.aggregate)
+```
+
+Concrete compressive strength using prediction
+========================================================
+
+```{r, echo=FALSE, out.height="1000px",out.width="1000px", cache=TRUE}
+library(ggplot2)
+y1 <- subset(testing, select = "Cement")
+y2 <- subset(testing, select = "FineAggregate")
+pred.cement <- predict(svm.model, y1)
+pred.aggregate <- predict(svm.aggregate, y2)
+
+ggplot() + 
+  geom_line(aes(x = pred.cement, Cement, colour="Cement"), testing) + 
+  geom_line(aes(x = pred.aggregate, FineAggregate, colour="Fine Aggregate"), testing) +
+     xlab("Compressive Strength (MPa)") +
+  ylab("kg/m3") + scale_colour_discrete(name="Component")
+
+```
